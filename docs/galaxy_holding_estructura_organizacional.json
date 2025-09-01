@@ -1,0 +1,248 @@
+{
+  "galaxy_holding_organizational_structure": {
+    "metadata": {
+      "analysis_date": "2025-08-30",
+      "total_employees": 31,
+      "active_domains": 3,
+      "expansion_domains": 7,
+      "organizational_layers": 5
+    },
+    "domains": {
+      "active": {
+        "galaxy_holding": {
+          "name": "Galaxy Holding",
+          "type": "parent_entity",
+          "employees": 16,
+          "description": "Entidad matriz con funciones de dirección, administración e IT",
+          "layers": {
+            "direccion": {
+              "name": "Dirección",
+              "employees": 6,
+              "roles": ["CEO", "COO", "CTO", "CFO", "Directors"],
+              "responsibilities": [
+                "Liderazgo ejecutivo",
+                "Toma de decisiones estratégicas",
+                "Supervisión cross-dominio",
+                "Aprobaciones de alto nivel"
+              ],
+              "erpnext_modules": ["Dashboard", "Reports", "Approvals", "All Modules"],
+              "access_level": "full"
+            },
+            "administracion_presupuestos": {
+              "name": "Administración & Presupuestos",
+              "employees": 1,
+              "roles": ["Financial Manager"],
+              "responsibilities": [
+                "Gestión financiera",
+                "Presupuestos y forecasting",
+                "Contabilidad consolidada",
+                "Facturación intercompañía"
+              ],
+              "erpnext_modules": ["Accounts", "Buying", "Selling", "Budget", "Reports"],
+              "access_level": "financial_full"
+            },
+            "it_desarrollo": {
+              "name": "IT / Desarrollo",
+              "employees": 6,
+              "roles": ["IT Manager", "Developers", "System Administrators"],
+              "responsibilities": [
+                "Desarrollo de software",
+                "Infraestructura IT",
+                "Gestión de proyectos técnicos",
+                "Soporte técnico"
+              ],
+              "erpnext_modules": ["Projects", "Timesheet", "Issues", "HR"],
+              "access_level": "projects_full"
+            },
+            "legal": {
+              "name": "Legal",
+              "employees": 0,
+              "roles": [],
+              "responsibilities": [
+                "Gestión legal y compliance",
+                "Contratos y acuerdos",
+                "Propiedad intelectual",
+                "Regulaciones"
+              ],
+              "erpnext_modules": ["CRM", "Documents", "Contracts"],
+              "access_level": "legal_full",
+              "status": "planned"
+            },
+            "operaciones_mantenimiento": {
+              "name": "Operaciones / Mantenimiento",
+              "employees": 3,
+              "roles": ["Operations Manager", "Maintenance Technicians"],
+              "responsibilities": [
+                "Operaciones generales",
+                "Mantenimiento de instalaciones",
+                "Gestión de proveedores",
+                "Control de calidad"
+              ],
+              "erpnext_modules": ["Manufacturing", "Stock", "Quality", "Maintenance"],
+              "access_level": "operations_full"
+            }
+          }
+        },
+        "galaxy_bio": {
+          "name": "Galaxy Bio",
+          "type": "subsidiary",
+          "employees": 9,
+          "description": "Ingeniería y proyectos biotecnológicos",
+          "parent_company": "galaxy_holding",
+          "layers": {
+            "operaciones_mantenimiento": {
+              "name": "Operaciones / Mantenimiento",
+              "employees": 9,
+              "roles": ["Bio Engineers", "Lab Technicians", "Quality Control"],
+              "responsibilities": [
+                "Proyectos biotecnológicos",
+                "Investigación y desarrollo",
+                "Control de calidad bio",
+                "Mantenimiento de equipos especializados"
+              ],
+              "erpnext_modules": ["Projects", "Manufacturing", "Stock", "Quality"],
+              "access_level": "bio_operations"
+            }
+          }
+        },
+        "galaxy_software": {
+          "name": "Galaxy Software",
+          "type": "subsidiary",
+          "employees": 6,
+          "description": "Desarrollo tecnológico y software",
+          "parent_company": "galaxy_holding",
+          "layers": {
+            "it_desarrollo": {
+              "name": "IT / Desarrollo",
+              "employees": 6,
+              "roles": ["Software Developers", "DevOps Engineers", "QA Engineers"],
+              "responsibilities": [
+                "Desarrollo de aplicaciones",
+                "Arquitectura de software",
+                "DevOps y CI/CD",
+                "Testing y QA"
+              ],
+              "erpnext_modules": ["Projects", "Timesheet", "Issues", "Tasks"],
+              "access_level": "development_full"
+            }
+          }
+        }
+      },
+      "expansion": {
+        "galaxy_pay": {
+          "name": "Galaxy Pay",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Fintech y servicios de pago",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2026-Q2",
+          "estimated_employees": 15,
+          "focus_areas": ["Payment Processing", "Digital Wallets", "Cryptocurrency"]
+        },
+        "galaxy_financial": {
+          "name": "Galaxy Financial",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Servicios financieros y consultoría",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2026-Q3",
+          "estimated_employees": 20,
+          "focus_areas": ["Financial Advisory", "Investment Management", "Corporate Finance"]
+        },
+        "asterion_capital": {
+          "name": "Asterion Capital",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Gestión de inversiones y capital",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2026-Q4",
+          "estimated_employees": 12,
+          "focus_areas": ["Private Equity", "Venture Capital", "Asset Management"]
+        },
+        "sygma_insurance": {
+          "name": "Sygma Insurance",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Servicios de seguros especializados",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2027-Q1",
+          "estimated_employees": 25,
+          "focus_areas": ["Corporate Insurance", "Risk Management", "Claims Processing"]
+        },
+        "galaxy_tower": {
+          "name": "Galaxy Tower",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Desarrollo inmobiliario y gestión de propiedades",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2027-Q2",
+          "estimated_employees": 18,
+          "focus_areas": ["Real Estate Development", "Property Management", "Construction"]
+        },
+        "galaxy_engineering": {
+          "name": "Galaxy Engineering",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Ingeniería especializada y consultoría técnica",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2027-Q3",
+          "estimated_employees": 30,
+          "focus_areas": ["Civil Engineering", "Industrial Engineering", "Technical Consulting"]
+        },
+        "galaxy_flash": {
+          "name": "Galaxy Flash",
+          "type": "planned_subsidiary",
+          "employees": 0,
+          "description": "Energía renovable y sostenibilidad",
+          "parent_company": "galaxy_holding",
+          "target_launch": "2027-Q4",
+          "estimated_employees": 22,
+          "focus_areas": ["Solar Energy", "Energy Storage", "Sustainability Consulting"]
+        }
+      }
+    },
+    "success_metrics": {
+      "operational_efficiency": {
+        "report_generation_time": {
+          "current": "2-3 days",
+          "target": "Real-time (minutes)",
+          "improvement": "95% reduction"
+        },
+        "intercompany_billing": {
+          "current": "100% manual",
+          "target": "80% automated",
+          "improvement": "80% automation"
+        },
+        "cross_domain_visibility": {
+          "current": "Limited",
+          "target": "Complete real-time",
+          "improvement": "100% improvement"
+        }
+      },
+      "financial_control": {
+        "closing_time": {
+          "current": "10-15 days",
+          "target": "5-7 days",
+          "improvement": "50% reduction"
+        },
+        "data_accuracy": {
+          "current": "85%",
+          "target": "95%",
+          "improvement": "10% improvement"
+        }
+      },
+      "scalability": {
+        "onboarding_time": {
+          "current": "2-3 weeks",
+          "target": "3-5 days",
+          "improvement": "75% reduction"
+        },
+        "system_capacity": {
+          "current": "31 users",
+          "target": "150+ users",
+          "improvement": "400% scalability"
+        }
+      }
+    }
+  }
+}
