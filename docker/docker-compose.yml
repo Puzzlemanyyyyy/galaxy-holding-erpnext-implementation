@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  # ERPNext Database
+  erpnext-db:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - erpnext_db_data:/var/lib/mysql
+      - ./configs/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf:ro
+    networks:
+      - galaxy-network
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # ERPNext Redis
+  erpnext-redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - erpnext_redis_data:/data
+    networks:
+      - galaxy-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ERPNext Application
+  erpnext:
+    image: frappe/erpnext:v15
+    restart: unless-stopped
+    environment:
+      - DB_HOST=erpnext-db
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_CACHE=erpnext-redis:6379
+      - REDIS_QUEUE=erpnext-redis:6379
+      - REDIS_SOCKETIO=erpnext-redis:6379
+      - SOCKETIO_PORT=9000
+      - AUTO_MIGRATE=1
+      - DEVELOPER_MODE=${DEVELOPER_MODE:-0}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - SITE_NAME=${SITE_NAME}
+    volumes:
+      - erpnext_sites:/home/frappe/frappe-bench/sites
+      - erpnext_logs:/home/frappe/frappe-bench/logs
+      - ../scripts:/scripts:ro
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    depends_on:
+      erpnext-db:
+        condition: service_healthy
+      erpnext-redis:
+        condition: service_healthy
+    networks:
+      - galaxy-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n Database
+  n8n-db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${N8N_DB_NAME}
+      POSTGRES_USER: ${N8N_DB_USER}
+      POSTGRES_PASSWORD: ${N8N_DB_PASSWORD}
+    volumes:
+      - n8n_db_data:/var/lib/postgresql/data
+    networks:
+      - galaxy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${N8N_DB_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n Application
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=${N8N_DB_NAME}
+      - DB_POSTGRESDB_HOST=n8n-db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=${N8N_DB_USER}
+      - DB_POSTGRESDB_PASSWORD=${N8N_DB_PASSWORD}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - GENERIC_TIMEZONE=${TIMEZONE}
+      - TZ=${TIMEZONE}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_RUNNERS_ENABLED=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ../templates:/templates:ro
+    ports:
+      - "5678:5678"
+    depends_on:
+      n8n-db:
+        condition: service_healthy
+    networks:
+      - galaxy-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/sites:/etc/nginx/sites-available:ro
+      - nginx_ssl:/etc/nginx/ssl
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - erpnext
+      - n8n
+    networks:
+      - galaxy-network
+
+volumes:
+  erpnext_db_data:
+  erpnext_redis_data:
+  erpnext_sites:
+  erpnext_logs:
+  n8n_db_data:
+  n8n_data:
+  nginx_ssl:
+  nginx_logs:
+
+networks:
+  galaxy-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
