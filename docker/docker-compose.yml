@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # ERPNext Database
   erpnext-db:
+    container_name: galaxy-erpnext-db
     image: mariadb:10.6
     restart: unless-stopped
     environment:
@@ -23,6 +24,7 @@ services:
 
   # ERPNext Redis
   erpnext-redis:
+    container_name: galaxy-erpnext-redis
     image: redis:7-alpine
     restart: unless-stopped
     volumes:
@@ -38,6 +40,7 @@ services:
 
   # ERPNext Application
   erpnext:
+    container_name: galaxy-erpnext
     image: frappe/erpnext:v15
     restart: unless-stopped
     environment:
@@ -76,6 +79,7 @@ services:
 
   # n8n Database
   n8n-db:
+    container_name: galaxy-n8n-db
     image: postgres:15
     restart: unless-stopped
     environment:
@@ -94,6 +98,7 @@ services:
 
   # n8n Application
   n8n:
+    container_name: galaxy-n8n
     image: n8nio/n8n:latest
     restart: unless-stopped
     environment:
@@ -133,6 +138,7 @@ services:
 
   # Nginx Reverse Proxy
   nginx:
+    container_name: galaxy-proxy
     image: nginx:alpine
     restart: unless-stopped
     ports:
