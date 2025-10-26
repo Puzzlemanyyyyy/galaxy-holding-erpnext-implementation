@@ -47,18 +47,30 @@ cd galaxy-holding-erpnext-implementation
 
 # 2. Configure environment variables
 cp docker/.env.example docker/.env
-# Edit docker/.env with your values
+# Edit docker/.env with secure credentials and hostnames
 
-# 3. Start services
-docker-compose -f docker/docker-compose.yml up -d
+# 3. Prepare local hostnames for reverse proxy
+echo "127.0.0.1 galaxy.local galaxy.erp.local n8n.local" | sudo tee -a /etc/hosts
 
-# 4. Setup companies and roles
-docker exec -it galaxy-erpnext python3 /scripts/setup_companies.py
-docker exec -it galaxy-erpnext python3 /scripts/setup_roles_permissions.py
+# 4. Start services
+docker-compose --env-file docker/.env -f docker/docker-compose.yml up -d
 
-# 5. Import n8n workflows
+# 5. Bootstrap companies, roles, and operational data
+docker exec -it galaxy-erpnext python3 /scripts/setup_companies.py --site galaxy.local
+docker exec -it galaxy-erpnext python3 /scripts/setup_roles_permissions.py --site galaxy.local
+docker exec -it galaxy-erpnext python3 /scripts/setup_erp_crm.py --site galaxy.local --verifactu-api-key <sandbox-key>
+
+# 6. Import n8n workflows
 # Access http://localhost:5678 and import from n8n_workflows/
 ```
+
+### Local deployment checklist
+
+- Ensure the `configs/` directory remains present so Nginx and MariaDB can mount their configuration files.
+- Update `configs/sites/galaxy.local.conf` if you change hostnames in the `.env` file.
+- Place any shared assets for n8n inside `templates/` before launching the stack.
+- Map the hostnames defined in `docker/.env` to `127.0.0.1` (or your server IP) in your local `/etc/hosts` file.
+- After the containers are healthy, visit `http://galaxy.local` for ERPNext and `http://n8n.local` for n8n.
 
 ---
 
@@ -109,6 +121,7 @@ docker exec -it galaxy-erpnext python3 /scripts/setup_roles_permissions.py
 ```
 ├── docs/                          # Complete documentation
 │   ├── galaxy_master_document.md   # Master implementation guide
+│   ├── erp_crm_expansion_plan.md   # ERP/CRM full functionality & Verifactu roadmap
 │   ├── galaxy_erpnext_n8n_ia_plan.md # 12-week implementation plan
 │   ├── installation_guide.md       # Step-by-step installation
 │   ├── erpnext_multicompany_setup.md # Multi-company configuration
@@ -125,7 +138,7 @@ docker exec -it galaxy-erpnext python3 /scripts/setup_roles_permissions.py
 │   ├── install.sh                 # Main installation script
 │   ├── setup_companies.py         # Company setup automation
 │   ├── setup_roles_permissions.py # Roles and permissions setup
-│   └── setup_workflows.py         # Workflow configuration
+│   └── setup_erp_crm.py           # ERP/CRM data & Verifactu provisioning
 ├── n8n_workflows/                 # n8n workflow templates
 │   ├── galaxy_executive_reporting.json
 │   ├── galaxy_intercompany_billing.json
