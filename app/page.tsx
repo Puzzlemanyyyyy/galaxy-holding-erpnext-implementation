@@ -152,7 +152,7 @@ export default function HomePage() {
             artificial. Diseñado para una estructura multiempresa con expansión a siete dominios adicionales.
           </p>
           <div className="hero-cta">
-            <a href="/docs/galaxy_master_document.md" download>
+            <a href="/docs/galaxy_master_document" download>
               Descargar Master Plan
             </a>
             <a className="secondary" href="https://github.com/Puzzlemanyyyyy/galaxy-holding-erpnext-implementation" target="_blank" rel="noreferrer">

@@ -120,7 +120,7 @@ docker exec -it galaxy-erpnext python3 /scripts/setup_erp_crm.py --site galaxy.l
 
 ```
 ├── docs/                          # Complete documentation
-│   ├── galaxy_master_document.md   # Master implementation guide
+│   ├── galaxy_master_document.md   # Master implementation guide (descargable desde /docs/galaxy_master_document)
 │   ├── erp_crm_expansion_plan.md   # ERP/CRM full functionality & Verifactu roadmap
 │   ├── galaxy_erpnext_n8n_ia_plan.md # 12-week implementation plan
 │   ├── installation_guide.md       # Step-by-step installation

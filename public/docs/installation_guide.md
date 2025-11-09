@@ -39,4 +39,4 @@ docker exec -it galaxy-erpnext python3 /scripts/setup_erp_crm.py --site galaxy.l
 - Revisar que la configuración multi-compañía esté aplicada.
 - Ejecutar flujos críticos (facturación intercompany, reportes con IA, notificaciones Teams).
 
-> Para detalles extendidos consultar el documento `docs/galaxy_master_document.md`.
+> Para detalles extendidos consultar el documento `/docs/galaxy_master_document`.
