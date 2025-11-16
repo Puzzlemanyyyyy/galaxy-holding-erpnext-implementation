@@ -2,7 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizeCss: true
+    optimizeCss: true,
+    outputFileTracingIncludes: {
+      '/app/docs/[slug]/route': ['./docs/**/*']
+    }
   }
 };
 
