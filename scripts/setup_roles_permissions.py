@@ -70,12 +70,7 @@ def provision_permission(role_name: str, doctype_name: str, permission_type: str
         "name",
     )
 
-    values = {
-        "doctype": "Custom DocPerm",
-        "parent": doctype_name,
-        "parenttype": "DocType",
-        "parentfield": "permissions",
-        "role": role_name,
+    permission_flags = {
         "read": 1 if permission_type in {"read", "write", "create"} else 0,
         "write": 1 if permission_type in {"write", "create"} else 0,
         "create": 1 if permission_type == "create" else 0,
@@ -85,9 +80,24 @@ def provision_permission(role_name: str, doctype_name: str, permission_type: str
         "amend": 1 if permission_type == "amend" else 0,
     }
 
+    values = {
+        "doctype": "Custom DocPerm",
+        "parent": doctype_name,
+        "parenttype": "DocType",
+        "parentfield": "permissions",
+        "role": role_name,
+        **permission_flags,
+    }
+
     if existing_perm:
         perm = frappe.get_doc("Custom DocPerm", existing_perm)
-        perm.update(values)
+
+        # Merge with existing privileges so subsequent updates do not clear
+        # previously granted access when iterating over permission types.
+        for flag, new_value in permission_flags.items():
+            existing_value = int(getattr(perm, flag, 0) or 0)
+            perm.set(flag, max(existing_value, new_value))
+
         perm.save(ignore_permissions=True)
     else:
         perm = frappe.get_doc(values)
